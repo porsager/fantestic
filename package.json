@@ -1,6 +1,6 @@
 {
   "name": "fantestic",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Fantastic testing",
   "main": "src/index.js",
   "type": "commonjs",
