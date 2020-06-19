@@ -1,0 +1,27 @@
+{
+  "name": "fantestic",
+  "version": "0.0.0",
+  "description": "Fantastic testing",
+  "main": "src/index.js",
+  "type": "commonjs",
+  "scripts": {
+    "test": "node tests",
+    "lint": "eslint src && eslint tests",
+    "prepublishOnly": "npm run lint && npm test"
+  },
+  "files": [
+    "/src"
+  ],
+  "author": "Rasmus Porsager <rasmus@porsager.com>",
+  "license": "WTFPL",
+  "repository": "porsager/fantestic",
+  "keywords": [
+    "fantestic",
+    "tests",
+    "test"
+  ],
+  "devDependencies": {
+    "babel-eslint": "10.1.0",
+    "eslint": "7.2.0"
+  }
+}
