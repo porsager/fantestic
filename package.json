@@ -1,6 +1,6 @@
 {
   "name": "fantestic",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Fantastic testing",
   "type": "module",
   "module": "fantestic.js",
