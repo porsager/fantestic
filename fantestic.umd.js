@@ -1,22 +1,24 @@
-/* eslint no-console: 0 */
+;(function(g){/* eslint no-console: 0 */
 
-const util = typeof require !== 'undefined'
-  ? require('util')
-  : ({ inspect: x => x })
+const test = (...rest) => run(false, ...rest)
+
+typeof exports==="object"&&typeof module!=="undefined"?module.exports=test:((g?g:self).fantestic=test);
 
 let done = 0
-let onlySome = false
-let ignored = 0
-let promise = Promise.resolve()
-let count = 0
+  , onlySome = false
+  , ignored = 0
+  , promise = Promise.resolve()
+  , count = 0
+
 const tests = []
+const noop = () => { /* noop */ }
+const proc = typeof process === 'undefined'
+  ? { exit: noop, stdout: { write: console.log } }
+  : process
 
-const not = () => ignored++
-const test = (...rest) => run(false, ...rest)
-const only = (...rest) => (onlySome = true, run(true, ...rest))
-
-test.timeout = 500
-module.exports = { not, only, test, n: not, o: only, t: test }
+test.timeout = 0.5
+test.not = test.nt = test.n = () => ignored++
+test.only = test.ot = test.o = (...rest) => (onlySome = true, run(true, ...rest))
 
 async function run(o, name, options, fn) {
   typeof options !== 'object' && (fn = options, options = {})
@@ -33,41 +35,35 @@ async function run(o, name, options, fn) {
     .then(() =>
       Promise.race([
         new Promise((resolve, reject) =>
-          fn.timer = setTimeout(() => reject('Timed out'), options.timeout || test.timeout)
+          fn.timer = setTimeout(() => reject('Timed out'), 1000 * options.timeout || test.timeout)
         ),
         typeof fn === 'function' ? fn() : fn
       ])
     )
     .then(async(x) => {
       if (!Array.isArray(x))
-        throw new Error('Test should return result array')
+        throw new Error('Tests should return result array [expected, got]')
 
       const [expected, got, cleanup] = x
 
       typeof cleanup === 'function' && await cleanup()
 
       if (expected !== got)
-        throw new Error(expected + ' != ' + util.inspect(got))
+        throw new Error(expected + ' != ' + got)
 
       tests[id].succeeded = true
-      process
-        ? process.stdout.write('✅')
-        : console.log('✅')
+      proc.stdout.write('✅')
     })
     .catch(err => {
       tests[id].failed = true
-      tests[id].error = err instanceof Error ? err : new Error(util.inspect(err))
+      tests[id].error = err instanceof Error ? err : new Error(err)
     })
     .then(() => {
       ++done === Object.keys(tests).length && finished()
     })
 }
 
-process.on('exit', finished)
-process.on('SIGINT', finished)
-
 function finished() {
-  process && process.removeAllListeners('exit')
   let success = true
   Object.values(tests).forEach((x) => {
     if (!x.succeeded) {
@@ -76,7 +72,7 @@ function finished() {
         ? console.error('⛔️', x.name + ' at line', x.line, 'cleanup failed', '\n', util.inspect(x.cleanup))
         : console.error('⛔️', x.name + ' at line', x.line, x.failed
           ? 'failed'
-          : 'never finished', '\n', util.inspect(x.error)
+          : 'never finished', '\n', x.error
         )
     }
   })
@@ -84,5 +80,6 @@ function finished() {
   ignored && console.error('⚠️', ignored, 'ignored test' + (ignored === 1 ? '' : 's', '\n'))
   !onlySome && success && !ignored
     ? console.log('🎉')
-    : (typeof process !== 'undefined') && process.exit(1) // eslint-disable-line
+    : proc.exit(1) // eslint-disable-line
 }
+})(this);

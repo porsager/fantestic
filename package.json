@@ -2,16 +2,19 @@
   "name": "fantestic",
   "version": "0.0.1",
   "description": "Fantastic testing",
-  "main": "src/index.js",
-  "type": "commonjs",
-  "scripts": {
-    "test": "node tests",
-    "lint": "eslint src && eslint tests",
-    "prepublishOnly": "npm run lint && npm test"
+  "type": "module",
+  "module": "fantestic.js",
+  "browser": "fantestic.umd.js",
+  "main": "fantestic.umd.js",
+  "exports": {
+    "import": "./fantestic.js",
+    "default": "./fantestic.umd.js"
   },
-  "files": [
-    "/src"
-  ],
+  "scripts": {
+    "test": "echo please PR",
+    "prepublishOnly": "npm run build",
+    "build": "node -e 'fs.writeFileSync(\"fantestic.umd.js\",\";(function(g){\"+fs.readFileSync(\"fantestic.js\",\"utf8\").replace(\"export default test\",`typeof exports===\"object\"&&typeof module\\!==\"undefined\"?module.exports=test:((g?g:self).fantestic=test);`) + \"})(this);\")'"
+  },
   "author": "Rasmus Porsager <rasmus@porsager.com>",
   "license": "WTFPL",
   "repository": "porsager/fantestic",
@@ -19,9 +22,5 @@
     "fantestic",
     "tests",
     "test"
-  ],
-  "devDependencies": {
-    "babel-eslint": "10.1.0",
-    "eslint": "7.2.0"
-  }
+  ]
 }

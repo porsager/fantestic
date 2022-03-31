@@ -1,7 +1,7 @@
-# 🎉 Fantestic 
+# 🎉 Fantestic
 
 ```js
-const { test, not, only } = require('fantestic')
+import { test, not, only } from 'fantestic'
 ```
 
 If you like short names Fantestic also exports `test` as `t`, `not` as `n` and `only` as `o`.
@@ -21,8 +21,8 @@ test(name, options?, run)
 A test run function should return/resolve to an array of the shape:
 ```js
 [
-    expected,
     result,
+    expected,
     cleanup
 ]
 ```
