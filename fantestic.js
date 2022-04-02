@@ -35,7 +35,7 @@ async function run(o, name, options, fn) {
     .then(() =>
       Promise.race([
         new Promise((resolve, reject) =>
-          fn.timer = setTimeout(() => reject('Timed out'), 1000 * options.timeout || test.timeout)
+          fn.timer = setTimeout(() => reject('Timed out'), 1000 * (options.timeout || test.timeout))
         ),
         typeof fn === 'function' ? fn() : fn
       ])
